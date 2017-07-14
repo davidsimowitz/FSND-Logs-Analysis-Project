@@ -43,7 +43,7 @@ $ cd FSND-Logs-Analysis-Project
     * summary_reporting_tool.py
     * newsdata.zip
     * fsnd-virtual-machine.zip
-    * SUMMARY_REPORT_2017-07-14_00:37:26_UTC.log (generated report example)
+    * SUMMARY_REPORT_2017-07-14_01:09:19_UTC.log  (generated report example)
 
 * Install Virtual Box, then Vagrant. (If not previously installed)
 * Unzip the fsnd-virtual-machine.zip file (This contains the VM files).
