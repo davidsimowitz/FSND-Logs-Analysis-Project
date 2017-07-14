@@ -12,7 +12,7 @@ The news database contains newspaper articles, as well as the web server log for
 The summary tool runs from the command line and does not take any input from the user. Instead it connects to the database, uses SQL queries to analyze the log data, and finds the following:
  + Most popular three articles of all time, sorted by popularity (most to least).
  + Most popular article authors of all time, sorted by popularity (most to least).
- + Days where more than 1% of user requests lead to errors.
+ + Days where more than 1% of user requests led to errors.
 
 Requirements
 ------------
