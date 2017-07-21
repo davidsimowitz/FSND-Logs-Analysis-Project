@@ -1,9 +1,9 @@
-FSND - Logs Analysis Project
+Logs Analysis
 =================================
 
 Udacity - Full Stack Web Developer Nanodegree
 ---------------------------------------------
-Logs Analysis Project
+P3: Logs Analysis
 
 Build an internal reporting tool that will use information from a newspaper site's database to discover what kind of articles the newspaper site's readers like.
 
@@ -32,12 +32,12 @@ Usage
 -----
 
 ```bash
-$ git clone https://github.com/davidsimowitz/FSND-Logs-Analysis-Project.git
+$ git clone https://github.com/davidsimowitz/fullstack-nanodegree-project-3.git
 ```
   + Above command is optional.
   + Alternatively you may download the files into the directory.
 ```bash
-$ cd FSND-Logs-Analysis-Project
+$ cd fullstack-nanodegree-project-3
 ```
   + Verify the following files are present before continuing:
     * summary_reporting_tool.py
