@@ -66,13 +66,9 @@ $ vagrant up
 ```bash
 $ vagrant ssh
 ```
-* Enter the shared vagrant directory.
+* Enter the shared vagrant directory and load the data from newsdata.sql.
 ```bash
 $ cd /vagrant
-$ ls
-```
-* Load the data from newsdata.sql
-```bash
 $ psql -d news -f newsdata.sql
 ```
 * Run the summary_reporting_tool.py report generator from the command-line.
