@@ -21,7 +21,7 @@ import time
 DB_NAME='news'
 
 
-def popular_articles(top_n=None):
+def popular_articles(top_n=None, PRINT_TO_SCREEN=True):
     """
     Sum up the views of each article and sort them by views (most to least)
     """
@@ -44,11 +44,13 @@ def popular_articles(top_n=None):
     top_articles = ({'article': str(row[0]), 'views': str(row[1])}
                     for row in fetch_results)
 
-    results = dict(title=title, parser=template, entries=top_articles)
+    results = printer(title=title, parser=template, entries=top_articles)
+    if PRINT_TO_SCREEN:
+        print(results)
     return results
 
 
-def popular_authors(top_n=None):
+def popular_authors(top_n=None, PRINT_TO_SCREEN=True):
     """
     Sum up article views by author and sort them by views (most to least)
     """
@@ -71,11 +73,13 @@ def popular_authors(top_n=None):
     top_authors = ({'author': str(row[0]), 'views': str(row[1])}
                    for row in fetch_results)
 
-    results = dict(title=title, parser=template, entries=top_authors)
+    results = printer(title=title, parser=template, entries=top_authors)
+    if PRINT_TO_SCREEN:
+        print(results)
     return results
 
 
-def user_request_errors(threshold=1.0):
+def user_request_errors(threshold=1.0, PRINT_TO_SCREEN=True):
     """
     Find days which experienced requests errors that met/exceeded threshold %
     """
@@ -118,7 +122,9 @@ def user_request_errors(threshold=1.0):
               'day': str(int(row[2])), 'req_err_percent': str(float(row[3]))}
               for row in fetch_results)
 
-    results = dict(title=title, parser=template, entries=errors)
+    results = printer(title=title, parser=template, entries=errors)
+    if PRINT_TO_SCREEN:
+        print(results)
     return results
 
 
@@ -187,28 +193,20 @@ def fetch_query(query):
     db, c = connect()
     c.execute(query)
     results = c.fetchall()
+
     db.close()
     return results
 
 
-def reporting_tool():
+def main():
     """
     Analyze news table and generate report
     """
-    output = list()
-    output.append(popular_articles(top_n=3))
-    output.append(popular_authors())
-    output.append(user_request_errors(threshold=1.0))
-
     report_writer = report_init(report_name='SUMMARY_REPORT')
-    for data in output:
-        summary = printer(**data)
-        print(summary)
-        report_writer(summary)
 
-
-def main():
-    reporting_tool()
+    report_writer(popular_articles(top_n=3))
+    report_writer(popular_authors())
+    report_writer(user_request_errors(threshold=1.0))
 
 
 if __name__ == '__main__':
