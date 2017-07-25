@@ -18,7 +18,10 @@ import string
 import time
 
 
-def popular_articles(cursor, top_n=None):
+DB_NAME='news'
+
+
+def popular_articles(top_n=None):
     """
     Sum up the views of each article and sort them by views (most to least)
     """
@@ -37,15 +40,17 @@ def popular_articles(cursor, top_n=None):
         title = title[:14] + str(top_n) + ' ' + title[14:]
         query += query[:-1] + " LIMIT {};".format(top_n)
 
-    cursor.execute(query)
+    db, c = connect()
+    c.execute(query)
     top_articles = ({'article': str(row[0]), 'views': str(row[1])}
-                    for row in cursor.fetchall())
+                    for row in c.fetchall())
+    db.close()
 
     results = dict(title=title, parser=template, entries=top_articles)
     return results
 
 
-def popular_authors(cursor, top_n=None):
+def popular_authors(top_n=None):
     """
     Sum up article views by author and sort them by views (most to least)
     """
@@ -64,15 +69,17 @@ def popular_authors(cursor, top_n=None):
         title = title[:14] + str(top_n) + ' ' + title[14:]
         query += query[:-1] + " LIMIT {};".format(top_n)
 
-    cursor.execute(query)
+    db, c = connect()
+    c.execute(query)
     top_authors = ({'author': str(row[0]), 'views': str(row[1])}
-                   for row in cursor.fetchall())
+                   for row in c.fetchall())
+    db.close
 
     results = dict(title=title, parser=template, entries=top_authors)
     return results
 
 
-def user_request_errors(cursor, threshold=1.0):
+def user_request_errors(threshold=1.0):
     """
     Find days which experienced requests errors that met/exceeded threshold %
     """
@@ -110,10 +117,13 @@ def user_request_errors(cursor, threshold=1.0):
             GROUP BY year, month, day, err.errors, req.requests \
             ORDER BY year, month, day;".format(threshold/100)
 
-    cursor.execute(query)
+    db, c = connect()
+    c.execute(query)
     errors = ({'year': str(int(row[0])), 'month': month_mapper[int(row[1])],
               'day': str(int(row[2])), 'req_err_percent': str(float(row[3]))}
-              for row in cursor.fetchall())
+              for row in c.fetchall())
+    db.close
+
     results = dict(title=title, parser=template, entries=errors)
     return results
 
@@ -161,7 +171,7 @@ def printer(title, parser, entries):
     return results
 
 
-def connect(database_name):
+def connect(database_name=DB_NAME):
     """
     Connect to the PostgreSQL database.
     Returns a database connection.
@@ -179,16 +189,11 @@ def reporting_tool():
     """
     Analyze news table and generate report
     """
-    DB_NAME='news'
-
-    db, c = connect(DB_NAME)
 
     output = list()
-    output.append(popular_articles(cursor=c, top_n=3))
-    output.append(popular_authors(cursor=c))
-    output.append(user_request_errors(cursor=c, threshold=1.0))
-
-    db.close()
+    output.append(popular_articles(top_n=3))
+    output.append(popular_authors())
+    output.append(user_request_errors(threshold=1.0))
 
     report_writer = report_init(report_name='SUMMARY_REPORT')
     for data in output:
