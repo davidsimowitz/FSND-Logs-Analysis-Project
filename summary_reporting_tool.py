@@ -21,7 +21,34 @@ import time
 DB_NAME='news'
 
 
-def popular_articles(top_n=None, PRINT_TO_SCREEN=True):
+def connect(database_name=DB_NAME):
+    """
+    Connect to the PostgreSQL database.
+    Returns a database connection.
+    """
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        c = db.cursor()
+        return db, c
+    except psycopg2.Error as e:
+        print("Unable to connect to database")
+        sys.exit(1)
+
+
+def fetch_query(query):
+    """
+    Connect to the database, execute query,
+    fetch results, close connection, return results
+    """
+    db, c = connect()
+    c.execute(query)
+    results = c.fetchall()
+
+    db.close()
+    return results
+
+
+def print_top_articles(top_n=None, PRINT_TO_SCREEN=True):
     """
     Sum up the views of each article and sort them by views (most to least)
     """
@@ -50,7 +77,7 @@ def popular_articles(top_n=None, PRINT_TO_SCREEN=True):
     return results
 
 
-def popular_authors(top_n=None, PRINT_TO_SCREEN=True):
+def print_top_authors(top_n=None, PRINT_TO_SCREEN=True):
     """
     Sum up article views by author and sort them by views (most to least)
     """
@@ -79,7 +106,7 @@ def popular_authors(top_n=None, PRINT_TO_SCREEN=True):
     return results
 
 
-def user_request_errors(threshold=1.0, PRINT_TO_SCREEN=True):
+def print_top_error_days(threshold=1.0, PRINT_TO_SCREEN=True):
     """
     Find days which experienced requests errors that met/exceeded threshold %
     """
@@ -171,42 +198,15 @@ def printer(title, parser, entries):
     return results
 
 
-def connect(database_name=DB_NAME):
-    """
-    Connect to the PostgreSQL database.
-    Returns a database connection.
-    """
-    try:
-        db = psycopg2.connect("dbname={}".format(database_name))
-        c = db.cursor()
-        return db, c
-    except psycopg2.Error as e:
-        print("Unable to connect to database")
-        sys.exit(1)
-
-
-def fetch_query(query):
-    """
-    Connect to the database, execute query,
-    fetch results, close connection, return results
-    """
-    db, c = connect()
-    c.execute(query)
-    results = c.fetchall()
-
-    db.close()
-    return results
-
-
 def main():
     """
     Analyze news table and generate report
     """
     report_writer = report_init(report_name='SUMMARY_REPORT')
 
-    report_writer(popular_articles(top_n=3))
-    report_writer(popular_authors())
-    report_writer(user_request_errors(threshold=1.0))
+    report_writer(print_top_articles(top_n=3))
+    report_writer(print_top_authors())
+    report_writer(print_top_error_days(threshold=1.0))
 
 
 if __name__ == '__main__':
