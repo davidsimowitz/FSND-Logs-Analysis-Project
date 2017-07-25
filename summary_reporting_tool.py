@@ -18,10 +18,7 @@ import string
 import time
 
 
-DB_NAME='news'
-
-
-def connect(database_name=DB_NAME):
+def connect(database_name='news'):
     """
     Connect to the PostgreSQL database.
     Returns a database connection.
