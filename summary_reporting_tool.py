@@ -161,19 +161,34 @@ def printer(title, parser, entries):
     return results
 
 
+def connect(database_name):
+    """
+    Connect to the PostgreSQL database.
+    Returns a database connection.
+    """
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        c = db.cursor()
+        return db, c
+    except psycopg2.Error as e:
+        print("Unable to connect to database")
+        sys.exit(1)
+
+
 def reporting_tool():
     """
     Analyze news table and generate report
     """
-    conn = psycopg2.connect(database='news')
-    c = conn.cursor()
+    DB_NAME='news'
+
+    db, c = connect(DB_NAME)
 
     output = list()
     output.append(popular_articles(cursor=c, top_n=3))
     output.append(popular_authors(cursor=c))
     output.append(user_request_errors(cursor=c, threshold=1.0))
 
-    conn.close()
+    db.close()
 
     report_writer = report_init(report_name='SUMMARY_REPORT')
     for data in output:
