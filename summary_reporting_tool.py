@@ -40,11 +40,9 @@ def popular_articles(top_n=None):
         title = title[:14] + str(top_n) + ' ' + title[14:]
         query += query[:-1] + " LIMIT {};".format(top_n)
 
-    db, c = connect()
-    c.execute(query)
+    fetch_results = fetch_query(query)
     top_articles = ({'article': str(row[0]), 'views': str(row[1])}
-                    for row in c.fetchall())
-    db.close()
+                    for row in fetch_results)
 
     results = dict(title=title, parser=template, entries=top_articles)
     return results
@@ -69,11 +67,9 @@ def popular_authors(top_n=None):
         title = title[:14] + str(top_n) + ' ' + title[14:]
         query += query[:-1] + " LIMIT {};".format(top_n)
 
-    db, c = connect()
-    c.execute(query)
+    fetch_results = fetch_query(query)
     top_authors = ({'author': str(row[0]), 'views': str(row[1])}
-                   for row in c.fetchall())
-    db.close
+                   for row in fetch_results)
 
     results = dict(title=title, parser=template, entries=top_authors)
     return results
@@ -117,12 +113,10 @@ def user_request_errors(threshold=1.0):
             GROUP BY year, month, day, err.errors, req.requests \
             ORDER BY year, month, day;".format(threshold/100)
 
-    db, c = connect()
-    c.execute(query)
+    fetch_results = fetch_query(query)
     errors = ({'year': str(int(row[0])), 'month': month_mapper[int(row[1])],
               'day': str(int(row[2])), 'req_err_percent': str(float(row[3]))}
-              for row in c.fetchall())
-    db.close
+              for row in fetch_results)
 
     results = dict(title=title, parser=template, entries=errors)
     return results
@@ -185,11 +179,22 @@ def connect(database_name=DB_NAME):
         sys.exit(1)
 
 
+def fetch_query(query):
+    """
+    Connect to the database, execute query,
+    fetch results, close connection, return results
+    """
+    db, c = connect()
+    c.execute(query)
+    results = c.fetchall()
+    db.close()
+    return results
+
+
 def reporting_tool():
     """
     Analyze news table and generate report
     """
-
     output = list()
     output.append(popular_articles(top_n=3))
     output.append(popular_authors())
