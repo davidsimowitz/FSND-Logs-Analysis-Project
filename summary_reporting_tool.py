@@ -27,9 +27,9 @@ def connect(database_name='news'):
         db = psycopg2.connect("dbname={}".format(database_name))
         c = db.cursor()
         return db, c
-    except psycopg2.Error as e:
-        print("Unable to connect to database")
-        sys.exit(1)
+    except psycopg2.Error:
+        print("ERROR: unable to connect to database")
+        raise 
 
 
 def fetch_query(query):
@@ -37,12 +37,19 @@ def fetch_query(query):
     Connect to the database, execute query,
     fetch results, close connection, return results
     """
-    db, c = connect()
-    c.execute(query)
-    results = c.fetchall()
-
-    db.close()
-    return results
+    try:
+        db, c = connect()
+        c.execute(query)
+        results = c.fetchall()
+    except psycopg2.ProgrammingError:
+        print("ERROR: unable to execute query")
+        db.close()
+        raise
+    except psycopg2.Error:
+        raise
+    else:
+        db.close()
+        return results
 
 
 def print_top_articles(top_n=None, PRINT_TO_SCREEN=True):
@@ -64,11 +71,18 @@ def print_top_articles(top_n=None, PRINT_TO_SCREEN=True):
         title = title[:14] + str(top_n) + ' ' + title[14:]
         query += query[:-1] + " LIMIT {};".format(top_n)
 
-    fetch_results = fetch_query(query)
-    top_articles = ({'article': str(row[0]), 'views': str(row[1])}
-                    for row in fetch_results)
+    try:
+        fetch_results = fetch_query(query)
+    except psycopg2.Error as e:
+        if e.pgcode or e.pgerror:
+            results = '{}\n{}\n'.format(e.pgcode, e.pgerror)
+        else:
+            results = 'error determining popular articles...\n'
+    else:
+        top_articles = ({'article': str(row[0]), 'views': str(row[1])}
+                        for row in fetch_results)
+        results = printer(title=title, parser=template, entries=top_articles)
 
-    results = printer(title=title, parser=template, entries=top_articles)
     if PRINT_TO_SCREEN:
         print(results)
     return results
@@ -93,11 +107,18 @@ def print_top_authors(top_n=None, PRINT_TO_SCREEN=True):
         title = title[:14] + str(top_n) + ' ' + title[14:]
         query += query[:-1] + " LIMIT {};".format(top_n)
 
-    fetch_results = fetch_query(query)
-    top_authors = ({'author': str(row[0]), 'views': str(row[1])}
-                   for row in fetch_results)
+    try:
+        fetch_results = fetch_query(query)
+    except psycopg2.Error as e:
+        if e.pgcode or e.pgerror:
+            results = '{}\n{}\n'.format(e.pgcode, e.pgerror)
+        else:
+            results = 'error determining popular authors...\n'
+    else:
+        top_authors = ({'author': str(row[0]), 'views': str(row[1])}
+                       for row in fetch_results)
+        results = printer(title=title, parser=template, entries=top_authors)
 
-    results = printer(title=title, parser=template, entries=top_authors)
     if PRINT_TO_SCREEN:
         print(results)
     return results
@@ -141,12 +162,19 @@ def print_top_error_days(threshold=1.0, PRINT_TO_SCREEN=True):
             GROUP BY year, month, day, err.errors, req.requests \
             ORDER BY year, month, day;".format(threshold/100)
 
-    fetch_results = fetch_query(query)
-    errors = ({'year': str(int(row[0])), 'month': month_mapper[int(row[1])],
-              'day': str(int(row[2])), 'req_err_percent': str(float(row[3]))}
-              for row in fetch_results)
+    try:
+        fetch_results = fetch_query(query)
+    except psycopg2.Error as e:
+        if e.pgcode or e.pgerror:
+            results = '{}\n{}\n'.format(e.pgcode, e.pgerror)
+        else:
+            results = 'error determining days with high request errors...\n'
+    else:
+        errors = ({'year': str(int(row[0])), 'month': month_mapper[int(row[1])],
+                  'day': str(int(row[2])), 'req_err_percent': str(float(row[3]))}
+                  for row in fetch_results)
+        results = printer(title=title, parser=template, entries=errors)
 
-    results = printer(title=title, parser=template, entries=errors)
     if PRINT_TO_SCREEN:
         print(results)
     return results
