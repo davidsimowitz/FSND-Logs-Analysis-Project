@@ -13,9 +13,9 @@ OUTPUT:  Results are printed to screen as well as to logfile in
          current directory.
 """
 
-import psycopg2
-import string
 import time
+import string
+import psycopg2
 
 
 def connect(database_name='news'):
@@ -29,7 +29,7 @@ def connect(database_name='news'):
         return db, c
     except psycopg2.Error:
         print("ERROR: unable to connect to database")
-        raise 
+        raise
 
 
 def fetch_query(query):
@@ -52,7 +52,7 @@ def fetch_query(query):
         return results
 
 
-def print_top_articles(top_n=None, PRINT_TO_SCREEN=True):
+def print_top_articles(top_n=None, print_to_screen=True):
     """
     Sum up the views of each article and sort them by views (most to least)
     """
@@ -73,9 +73,9 @@ def print_top_articles(top_n=None, PRINT_TO_SCREEN=True):
 
     try:
         fetch_results = fetch_query(query)
-    except psycopg2.Error as e:
-        if e.pgcode or e.pgerror:
-            results = '{}\n{}\n'.format(e.pgcode, e.pgerror)
+    except psycopg2.Error as err:
+        if err.pgcode or err.pgerror:
+            results = '{}\n{}\n'.format(err.pgcode, err.pgerror)
         else:
             results = 'error determining popular articles...\n'
     else:
@@ -83,12 +83,12 @@ def print_top_articles(top_n=None, PRINT_TO_SCREEN=True):
                         for row in fetch_results)
         results = printer(title=title, parser=template, entries=top_articles)
 
-    if PRINT_TO_SCREEN:
+    if print_to_screen:
         print(results)
     return results
 
 
-def print_top_authors(top_n=None, PRINT_TO_SCREEN=True):
+def print_top_authors(top_n=None, print_to_screen=True):
     """
     Sum up article views by author and sort them by views (most to least)
     """
@@ -109,9 +109,9 @@ def print_top_authors(top_n=None, PRINT_TO_SCREEN=True):
 
     try:
         fetch_results = fetch_query(query)
-    except psycopg2.Error as e:
-        if e.pgcode or e.pgerror:
-            results = '{}\n{}\n'.format(e.pgcode, e.pgerror)
+    except psycopg2.Error as err:
+        if err.pgcode or err.pgerror:
+            results = '{}\n{}\n'.format(err.pgcode, err.pgerror)
         else:
             results = 'error determining popular authors...\n'
     else:
@@ -119,12 +119,12 @@ def print_top_authors(top_n=None, PRINT_TO_SCREEN=True):
                        for row in fetch_results)
         results = printer(title=title, parser=template, entries=top_authors)
 
-    if PRINT_TO_SCREEN:
+    if print_to_screen:
         print(results)
     return results
 
 
-def print_top_error_days(threshold=1.0, PRINT_TO_SCREEN=True):
+def print_top_error_days(threshold=1.0, print_to_screen=True):
     """
     Find days which experienced requests errors that met/exceeded threshold %
     """
@@ -164,18 +164,20 @@ def print_top_error_days(threshold=1.0, PRINT_TO_SCREEN=True):
 
     try:
         fetch_results = fetch_query(query)
-    except psycopg2.Error as e:
-        if e.pgcode or e.pgerror:
-            results = '{}\n{}\n'.format(e.pgcode, e.pgerror)
+    except psycopg2.Error as err:
+        if err.pgcode or err.pgerror:
+            results = '{}\n{}\n'.format(err.pgcode, err.pgerror)
         else:
             results = 'error determining days with high request errors...\n'
     else:
-        errors = ({'year': str(int(row[0])), 'month': month_mapper[int(row[1])],
-                  'day': str(int(row[2])), 'req_err_percent': str(float(row[3]))}
+        errors = ({'year': str(int(row[0])),
+                   'month': month_mapper[int(row[1])],
+                   'day': str(int(row[2])),
+                   'req_err_percent': str(float(row[3]))}
                   for row in fetch_results)
         results = printer(title=title, parser=template, entries=errors)
 
-    if PRINT_TO_SCREEN:
+    if print_to_screen:
         print(results)
     return results
 
@@ -200,6 +202,9 @@ def report_init(report_name='SUMMARY_REPORT'):
     file_name = report_name + timestamp_gen(file_extension=True)
 
     def report_builder(lines):
+        """
+        Append report from input string
+        """
         with open(file_name, 'a') as file_obj_out:
             for line in lines:
                 file_obj_out.write(line)
@@ -218,7 +223,7 @@ def printer(title, parser, entries):
     for entry in entries:
         try:
             results += template.safe_substitute(entry)
-        except ValueError as e:
+        except ValueError:
             results += error_msg.format(timestamp_gen(), entry, parser)
     return results
 
