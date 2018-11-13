@@ -1,11 +1,13 @@
 Logs Analysis
 =================================
 
+
 Udacity - Full Stack Web Developer Nanodegree
 ---------------------------------------------
 P3: Logs Analysis
 
 This project's goal is to build an internal command line reporting tool that will use information queried from a newspaper site's database to determine what kind of articles the newspaper site's readers prefer. The tool determines the most popular articles, as well as authors, and days where the site experienced a high level of user request errors based on user activity and web server logs.
+
 
 Requirements
 ------------
@@ -20,6 +22,7 @@ $ python -V
 + [VM configuration files](https://github.com/udacity/fullstack-nanodegree-vm) are setup.
 + [Git](https://git-scm.com/downloads) is installed.
   (Optional, if you wish to clone the project repository.)
+
 
 Usage
 -----
@@ -68,6 +71,7 @@ $ psql -d news -f newsdata.sql
 ```bash
 $ ./summary_reporting_tool.py
 ```
+
 
 Output
 ------
