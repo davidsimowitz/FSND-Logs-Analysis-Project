@@ -5,9 +5,7 @@ Udacity - Full Stack Web Developer Nanodegree
 ---------------------------------------------
 P3: Logs Analysis
 
-Build an internal reporting tool that will use information from a newspaper site's database to discover what kind of articles the newspaper site's readers like.
-
-The news database contains newspaper articles, as well as the web server log for the site. The log has a database row for each time a reader loaded a web page. Using that information, the summary tool will answer questions about the site's user activity.
+This project's goal is to build an internal reporting tool that will use information queried from a newspaper site's database to determine what kind of articles the newspaper site's readers prefer. The news database contains newspaper articles, as well as the web server log for the site. The log has a database row for each time a reader loaded a web page. Using that information, the summary tool answers questions about the site's user activity.
 
 The summary tool runs from the command line and does not take any input from the user. Instead it connects to the database, uses SQL queries to analyze the log data, and finds the following:
  + Most popular three articles of all time, sorted by popularity (most to least).
