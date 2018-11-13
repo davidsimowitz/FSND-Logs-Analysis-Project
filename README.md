@@ -5,12 +5,7 @@ Udacity - Full Stack Web Developer Nanodegree
 ---------------------------------------------
 P3: Logs Analysis
 
-This project's goal is to build an internal reporting tool that will use information queried from a newspaper site's database to determine what kind of articles the newspaper site's readers prefer. The news database contains newspaper articles, as well as the web server log for the site. The log has a database row for each time a reader loaded a web page. Using that information, the summary tool answers questions about the site's user activity.
-
-The summary tool runs from the command line and does not take any input from the user. Instead it connects to the database, uses SQL queries to analyze the log data, and finds the following:
- + Most popular three articles of all time, sorted by popularity (most to least).
- + Most popular article authors of all time, sorted by popularity (most to least).
- + Days where more than 1% of user requests led to errors.
+This project's goal is to build an internal command line reporting tool that will use information queried from a newspaper site's database to determine what kind of articles the newspaper site's readers prefer. The tool determines the most popular articles, as well as authors, and days where the site experienced a high level of user request errors based on user activity and web server logs.
 
 Requirements
 ------------
@@ -69,8 +64,15 @@ $ vagrant ssh
 $ cd /vagrant
 $ psql -d news -f newsdata.sql
 ```
-* Run the summary_reporting_tool.py report generator from the command-line.
+* Run the summary_reporting_tool.py report generator from the command-line. The results will automatically be output to the terminal once the command is run. A log file will also be generated in the current directory.
 ```bash
 $ ./summary_reporting_tool.py
 ```
-  + The results will automatically be output to the terminal once the command is run. A log file will also be generated in the current directory.
+
+Output
+------
+
+* The summary tool runs from the command line and does not take any input from the user. Instead it connects to the database, uses SQL queries to analyze the log data, and finds the following:
+  + Most popular three articles of all time, sorted by popularity (most to least).
+  + Most popular article authors of all time, sorted by popularity (most to least).
+  + Days where more than 1% of user requests led to errors.
