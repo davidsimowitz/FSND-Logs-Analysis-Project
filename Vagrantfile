@@ -75,5 +75,10 @@ Vagrant.configure("2") do |config|
     echo "==> upgrading packages..."
     DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
+    # Update Python
+    echo "==> updating Python 3..."
+    apt-get -qqy install python3 python3-pip python3-venv
+    pip3 install --upgrade pip
+
   SHELL
 end
