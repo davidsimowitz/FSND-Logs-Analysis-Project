@@ -45,6 +45,7 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "data/", "/data"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -92,6 +93,11 @@ Vagrant.configure("2") do |config|
     su postgres -c 'createuser -dRS vagrant'
     su vagrant -c 'createdb'
     su vagrant -c 'createdb news'
+
+    # Populate DB
+    echo "==> populating 'news' database..."
+    apt-get -qqy install unzip
+    cd /data && unzip -qq newsdata.zip && su vagrant -c 'psql news -f newsdata.sql'
 
   SHELL
 end
