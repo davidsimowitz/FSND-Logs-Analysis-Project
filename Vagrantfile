@@ -99,5 +99,7 @@ Vagrant.configure("2") do |config|
     apt-get -qqy install unzip
     cd /data && unzip -qq newsdata.zip && su vagrant -c 'psql news -f newsdata.sql'
 
+    echo "==> Vagrant box is now provisioned and ready to use!"
+
   SHELL
 end
