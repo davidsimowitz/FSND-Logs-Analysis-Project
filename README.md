@@ -15,11 +15,10 @@ Requirements
 + [Python 3](https://www.python.org/downloads/) is installed.
 + This can be verified by running the following command in the terminal:
 ```bash
-$ python -V
+$ python3 -V
 ```
 + [Virtual Box](https://www.virtualbox.org/wiki/Downloads) is installed.
 + [Vagrant](https://www.vagrantup.com/downloads.html) is installed.
-+ [VM configuration files](https://github.com/udacity/fullstack-nanodegree-vm) are setup.
 + [Git](https://git-scm.com/downloads) is installed.
   (Optional, if you wish to clone the project repository.)
 
@@ -36,24 +35,21 @@ $ git clone https://github.com/davidsimowitz/fullstack-nanodegree-project-3.git
 $ cd fullstack-nanodegree-project-3
 ```
   + Verify the following files are present before continuing:
-    * summary_reporting_tool.py
-    * newsdata.zip
-    * fsnd-virtual-machine.zip
-    * SUMMARY_REPORT_2017-07-14_01:09:19_UTC.log  (generated report example)
+  ```bash
+  fullstack-nanodegree-project-3/
+     │
+     ├── data/
+     │     │
+     │     ├── SUMMARY_REPORT_2017-07-14_01:09:19_UTC.log
+     │     ├── newsdata.zip
+     │     └── summary_reporting_tool.py
+     │
+     ├── README.md
+     └── Vagrantfile
+  ```
 
 * Install Virtual Box, then Vagrant. (If not previously installed)
-* Unzip the fsnd-virtual-machine.zip file (This contains the VM files).
-* Unzip the newsdata.zip file (contains the PostgreSQL database for this project)
 
-* Copy summary_reporting_tool.py and newsdata.sql to the vagrant directory in the VM.
-```bash
-$ cp summary_reporting_tool.py ./FSND-Virtual-Machine/vagrant/summary_reporting_tool.py
-$ cp newsdata.sql ./FSND-Virtual-Machine/vagrant/newsdata.sql
-```
-* Enter the VM directory.
-```bash
-$ cd FSND-Virtual-Machine/vagrant/
-```
 * Startup the VM. (This may take a while)
 ```bash
 $ vagrant up
@@ -62,10 +58,9 @@ $ vagrant up
 ```bash
 $ vagrant ssh
 ```
-* Enter the shared vagrant directory and load the data from newsdata.sql.
+* Enter the shared vagrant directory.
 ```bash
-$ cd /vagrant
-$ psql -d news -f newsdata.sql
+$ cd /data
 ```
 * Run the summary_reporting_tool.py report generator from the command-line. The results will automatically be output to the terminal once the command is run. A log file will also be generated in the current directory.
 ```bash
