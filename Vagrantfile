@@ -87,5 +87,11 @@ Vagrant.configure("2") do |config|
     echo "==> installing PostgreSQL..."
     apt-get -qqy install postgresql-10
 
+    # Setup DB
+    echo "==> setting up 'news' database..."
+    su postgres -c 'createuser -dRS vagrant'
+    su vagrant -c 'createdb'
+    su vagrant -c 'createdb news'
+
   SHELL
 end
