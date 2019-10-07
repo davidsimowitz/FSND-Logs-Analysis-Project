@@ -80,5 +80,12 @@ Vagrant.configure("2") do |config|
     apt-get -qqy install python3 python3-pip python3-venv
     pip3 install --upgrade pip
 
+    # Install PostgreSQL database adapter
+    pip install psycopg2
+    python3 -m pip install psycopg2-binary
+    # Install DB
+    echo "==> installing PostgreSQL..."
+    apt-get -qqy install postgresql-10
+
   SHELL
 end
