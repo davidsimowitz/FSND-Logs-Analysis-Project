@@ -71,5 +71,9 @@ Vagrant.configure("2") do |config|
     echo "==> updating package index files..."
     apt-get -qqy update
 
+    # Avoid the conffile prompt while installing the newest package versions.
+    echo "==> upgrading packages..."
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
+
   SHELL
 end
